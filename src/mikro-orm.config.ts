@@ -4,7 +4,7 @@ import { getConfig } from './config.service.ts';
 export default defineConfig({
   clientUrl: getConfig().database.url,
 
-  entities: ['dist/**/*.entity.js'],
+  entities: ['src/**/*.entity.js'],
   entitiesTs: ['src/**/*.entity.ts'],
 
   migrations: {
