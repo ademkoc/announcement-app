@@ -1,0 +1,12 @@
+node_modules
+.DS_Store
+garage.txt
+sqlite.db
+temp/
+.deploy/data/
+.deploy/meta/
+*.db
+*.db-info
+*.db-shm
+*.db-wal
+.env

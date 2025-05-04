@@ -1,0 +1,44 @@
+services:
+  mysql:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: announcement_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  garage:
+    container_name: garaged
+    image: dxflrs/garage:v1.1.0
+    restart: unless-stopped
+    ports:
+      - 3900:3900
+      - 3901:3901
+      - 3902:3902
+    volumes:
+      - ./garage.toml:/etc/garage.toml
+      - garage-meta:/var/lib/garage/meta
+      - garage-data:/var/lib/garage/data
+
+  broker:
+    container_name: broker
+    image: rabbitmq:4-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=0f59Ve7q
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+volumes:
+  mysql_data:
+  rabbitmq_data:
+  garage-meta:
+  garage-data:
