@@ -63,8 +63,13 @@ export class AzureCognitiveService extends AbstractTranscriptionService implemen
       reco.stopContinuousRecognitionAsync();
     };
 
-    // Signals the end of a session with the speech service.
-    reco.sessionStopped = function (s, e) {
+    reco.sessionStarted = (s, e) => {
+      this.#logger.debug("(session started)  SessionId: " + e.sessionId);
+    };
+
+    reco.sessionStopped = (s, e) => {
+      this.#logger.debug("(session stopped)  SessionId: " + e.sessionId);
+
       reco.stopContinuousRecognitionAsync();
       reco.close();
       resolve(text);

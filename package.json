@@ -17,7 +17,6 @@
   "devDependencies": {
     "@mikro-orm/cli": "^6.4.13",
     "@mikro-orm/migrations": "^6.4.13",
-    "@types/amqplib": "^0.10.7",
     "@types/luxon": "^3.6.2",
     "@types/node": "^22.14.0",
     "pino-pretty": "^13.0.0",
@@ -27,7 +26,6 @@
     "@aws-sdk/client-s3": "^3.787.0",
     "@mikro-orm/core": "^6.4.13",
     "@mikro-orm/mysql": "^6.4.13",
-    "amqplib": "^0.10.7",
     "execa": "^9.5.2",
     "luxon": "^3.6.1",
     "microsoft-cognitiveservices-speech-sdk": "^1.43.1",

@@ -1,36 +1,34 @@
-import type { ConsumeMessage } from "amqplib";
 import { GarageService } from "./garage.service.ts";
-import type { IConsumer } from "./message.service.ts";
-import { AmqpClient } from "./amqp.client.ts";
+import type { IConsumer, Message } from "./message.service.ts";
 import { SdrRecordService } from "./sdr-record.service.ts";
 import { getLogger } from "./logger.ts";
 import { DateTime } from 'luxon';
+import EventEmitter from "node:events";
 
-export class AnnouncementReceivedConsumer implements IConsumer {
+export type AnnouncementReceivedConsumerMessage = {
+  filename: string;
+  district: string;
+  receivedAt: string;
+}
+
+export class AnnouncementReceivedConsumer extends EventEmitter implements IConsumer {
   #logger = getLogger();
-  #amqpClient: AmqpClient;
   #garageService: GarageService;
   #sdrRecordService: SdrRecordService;
 
   constructor(
-    amqpClient: AmqpClient,
     garageService: GarageService,
     sdrRecordService: SdrRecordService,
   ) {
-    this.#amqpClient = amqpClient;
+    super();
     this.#garageService = garageService;
     this.#sdrRecordService = sdrRecordService;
   }
 
-  async handleMessage(msg: ConsumeMessage | null): Promise<void> {
-    this.#logger.info('New message received', JSON.stringify(msg));
+  async handleMessage(payload: Message): Promise<void> {
+    this.#logger.info('New message received', JSON.stringify(payload));
 
-    if (msg === null) {
-      return;
-    }
-
-    const message = JSON.parse(msg.content.toString()) as
-      { filename: string, district: string, receivedAt: string };
+    const message = payload.body as AnnouncementReceivedConsumerMessage;
 
     const file = await this.#garageService.getFile(message.filename);
 
@@ -46,7 +44,5 @@ export class AnnouncementReceivedConsumer implements IConsumer {
         text
       });
     }
-
-    this.#amqpClient.channel.ack(msg);
   }
 }

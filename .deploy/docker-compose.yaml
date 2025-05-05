@@ -25,20 +25,7 @@ services:
       - garage-meta:/var/lib/garage/meta
       - garage-data:/var/lib/garage/data
 
-  broker:
-    container_name: broker
-    image: rabbitmq:4-management
-    ports:
-      - 5672:5672
-      - 15672:15672
-    environment:
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=0f59Ve7q
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-
 volumes:
   mysql_data:
-  rabbitmq_data:
   garage-meta:
   garage-data:

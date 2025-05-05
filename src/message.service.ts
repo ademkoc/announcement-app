@@ -1,33 +1,38 @@
-import type { ConsumeMessage } from 'amqplib';
-import { AmqpClient } from './amqp.client.ts';
+import type EventEmitter from 'node:events';
 
 type Queue = 'announcement_received';
 
+export type Message = { id: string; body: Record<string, unknown> };
+
 export interface IConsumer {
-  handleMessage: (msg: ConsumeMessage | null) => void
+  handleMessage: (msg: Message) => void
 }
 
-export class MessageService {
-  #amqpClient: AmqpClient;
-  #consumers: Map<string, IConsumer>;
+type ConsumerType = EventEmitter & IConsumer;
 
-  constructor(amqpClient: AmqpClient) {
-    this.#amqpClient = amqpClient;
-    this.#consumers = new Map<string, IConsumer>;
+export class MessageService {
+  #consumers: Map<string, ConsumerType>;
+
+  constructor() {
+    this.#consumers = new Map<string, ConsumerType>;
   }
 
-  addConsumer(name: string, consumer: IConsumer) {
+  addConsumer(name: string, consumer: ConsumerType) {
     this.#consumers.set(name, consumer);
     this.#defineConsumers();
   }
 
   #defineConsumers() {
-    for (const [queue, consumer] of this.#consumers) {
-      this.#amqpClient.channel.consume(queue, consumer.handleMessage.bind(consumer));
+    for (const [, consumer] of this.#consumers) {
+      consumer.on('message', consumer.handleMessage);
     }
   }
 
-  sendMessage(queue: Queue, data: Record<string, unknown>) {
-    return this.#amqpClient.channel.sendToQueue(queue, Buffer.from(JSON.stringify(data)), { persistent: true })
+  sendMessage(queue: Queue, payload: Message) {
+    const consumer = this.#consumers.get(queue);
+    if (!consumer) {
+      throw new Error(`Consumer not found for queue: ${queue}`);
+    }
+    consumer.emit('message', payload);
   }
 }

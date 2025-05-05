@@ -56,9 +56,12 @@ export class RecordWatchService {
     const formatedTime = `${receiveTime.slice(0, 2)}:${receiveTime.slice(2, 4)}:${receiveTime.slice(4, 6)}`;
 
     this.#messageService.sendMessage('announcement_received', {
-      filename,
-      district,
-      receivedAt: `${formatedDate} ${formatedTime}`,
+      id: 'announcementReceived',
+      body: {
+        filename,
+        district,
+        receivedAt: `${formatedDate} ${formatedTime}`,
+      }
     });
 
     this.#logger.info(`Message sent for ${filename}!`);
@@ -66,7 +69,7 @@ export class RecordWatchService {
 
   async watchFolder() {
     for await (const event of fs.watch(this.#config.recordingsFolderPath, {})) {
-      console.log(event);
+      this.#logger.debug(event);
 
       if (!event.filename) {
         continue;

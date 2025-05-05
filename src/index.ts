@@ -5,7 +5,6 @@ import { SdrRecordService } from './sdr-record.service.ts';
 import { GarageService } from './garage.service.ts';
 import { SdrRecord } from './sdr-record.entity.ts';
 import { AnnouncementReceivedConsumer } from './announcement-received.consumer.ts';
-import { AmqpClient } from './amqp.client.ts';
 import { getLogger } from './logger.ts';
 import { RecordWatchService } from './record-watch.service.ts';
 import { AzureCognitiveService } from './transcription/azure-cognitive.service.ts';
@@ -19,7 +18,6 @@ async function main() {
   const config = getConfig();
 
   const orm = await MikroORM.init();
-  const amqpClient = await AmqpClient.init(config);
 
   process.addListener('SIGTERM', (signal) => closeServer(signal));
   process.addListener('SIGINT', (signal) => closeServer(signal));
@@ -27,13 +25,12 @@ async function main() {
   const closeServer = async (signal:NodeJS.Signals) => {
     logger.info(`Received signal to close: ${signal}`);
     await orm.close();
-    await amqpClient.dispose();
     logger.info(`Bye!`);
     process.exit();
   };
 
   const garageService = new GarageService(config);
-  const messageService = new MessageService(amqpClient);
+  const messageService = new MessageService();
 
   const azureCognitiveService = new AzureCognitiveService(config);
 
@@ -42,7 +39,7 @@ async function main() {
 
   messageService.addConsumer(
     'announcement_received',
-    new AnnouncementReceivedConsumer(amqpClient, garageService, sdrRecordService)
+    new AnnouncementReceivedConsumer(garageService, sdrRecordService)
   );
 
   await recordWatchService.bootCheck(await sdrRecordService.getAllFilenames());
