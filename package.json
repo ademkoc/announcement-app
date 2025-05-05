@@ -7,9 +7,9 @@
     "build": "tsc",
     "start": "node --no-warnings=ExperimentalWarning --experimental-strip-types --env-file=.env src/index.ts",
     "dev": "node --watch --no-warnings=ExperimentalWarning --experimental-strip-types --env-file=.env src/index.ts",
-    "migration:create": "NODE_OPTIONS='--no-warnings=ExperimentalWarning --experimental-strip-types' mikro-orm migration:create",
-    "migration:down": "NODE_OPTIONS='--no-warnings=ExperimentalWarning --experimental-strip-types' mikro-orm migration:down",
-    "migration:up": "NODE_OPTIONS='--no-warnings=ExperimentalWarning --experimental-strip-types' mikro-orm migration:up"
+    "migration:create": "NODE_OPTIONS='-r dotenv/config --no-warnings=ExperimentalWarning --experimental-strip-types' mikro-orm migration:create",
+    "migration:down": "NODE_OPTIONS='-r dotenv/config --no-warnings=ExperimentalWarning --experimental-strip-types' mikro-orm migration:down",
+    "migration:up": "NODE_OPTIONS='-r dotenv/config --no-warnings=ExperimentalWarning --experimental-strip-types' mikro-orm migration:up"
   },
   "author": "Adem Koç",
   "license": "MIT",
@@ -26,6 +26,7 @@
     "@aws-sdk/client-s3": "^3.787.0",
     "@mikro-orm/core": "^6.4.13",
     "@mikro-orm/mysql": "^6.4.13",
+    "dotenv": "^16.5.0",
     "execa": "^9.5.2",
     "luxon": "^3.6.1",
     "microsoft-cognitiveservices-speech-sdk": "^1.43.1",
@@ -35,8 +36,8 @@
     "alwaysAllowTs": true,
     "useTsNode": false,
     "configPaths": [
-      "./src/mikro-orm.config.ts",
-      "./src/mikro-orm.config.js"
+      "src/infrastructure/mikro-orm.config.ts",
+      "src/infrastructure/mikro-orm.config.js"
     ]
   }
 }

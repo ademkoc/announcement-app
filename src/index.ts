@@ -1,13 +1,13 @@
 import { MikroORM } from '@mikro-orm/mysql';
-import { MessageService } from './message.service.ts';
-import { getConfig } from './config.service.ts';
-import { SdrRecordService } from './sdr-record.service.ts';
-import { GarageService } from './garage.service.ts';
-import { SdrRecord } from './sdr-record.entity.ts';
-import { AnnouncementReceivedConsumer } from './announcement-received.consumer.ts';
-import { getLogger } from './logger.ts';
-import { RecordWatchService } from './record-watch.service.ts';
-import { AzureCognitiveService } from './transcription/azure-cognitive.service.ts';
+import { MessageService } from './infrastructure/message.service.ts';
+import { getConfig } from './infrastructure/config.ts';
+import { AnnouncementService } from './modules/announcement/announcement.service.ts';
+import { GarageService } from './modules/garage.service.ts';
+import { Announcement } from './modules/announcement/announcement.entity.ts';
+import { AnnouncementReceivedConsumer } from './modules/announcement/announcement-received.consumer.ts';
+import { getLogger } from './infrastructure/logger.ts';
+import { RecordWatchService } from './modules/announcement/record-watch.service.ts';
+import { AzureCognitiveService } from './modules/transcription/azure-cognitive.service.ts';
 
 const logger = getLogger();
 
@@ -22,7 +22,7 @@ async function main() {
   process.addListener('SIGTERM', (signal) => closeServer(signal));
   process.addListener('SIGINT', (signal) => closeServer(signal));
 
-  const closeServer = async (signal:NodeJS.Signals) => {
+  const closeServer = async (signal: NodeJS.Signals) => {
     logger.info(`Received signal to close: ${signal}`);
     await orm.close();
     logger.info(`Bye!`);
@@ -34,15 +34,15 @@ async function main() {
 
   const azureCognitiveService = new AzureCognitiveService(config);
 
-  const sdrRecordService = new SdrRecordService(orm.em.fork().getRepository(SdrRecord), azureCognitiveService);
+  const announcementService = new AnnouncementService(orm.em.fork().getRepository(Announcement), azureCognitiveService);
   const recordWatchService = new RecordWatchService(config, garageService, messageService);
 
   messageService.addConsumer(
     'announcement_received',
-    new AnnouncementReceivedConsumer(garageService, sdrRecordService)
+    new AnnouncementReceivedConsumer(garageService, announcementService)
   );
 
-  await recordWatchService.bootCheck(await sdrRecordService.getAllFilenames());
+  await recordWatchService.bootCheck(await announcementService.getAllFilenames());
   logger.info("We are ready!");
   await recordWatchService.watchFolder();
 }

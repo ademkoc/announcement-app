@@ -2,8 +2,8 @@ import fs from 'node:fs';
 import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 import type { ITranscriber } from "./transcriber.ts";
 import { AbstractTranscriptionService } from "./abstract.service.ts";
-import type { Config } from '../config.service.ts';
-import { getLogger } from "../logger.ts";
+import type { Config } from '../../infrastructure/config.ts';
+import { getLogger } from "../../infrastructure/logger.ts";
 
 export class AzureCognitiveService extends AbstractTranscriptionService implements ITranscriber {
   #speechConfig: sdk.SpeechConfig;

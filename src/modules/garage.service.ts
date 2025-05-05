@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import * as AWS from "@aws-sdk/client-s3";
-import type { Config } from "./config.service.ts";
-import { getLogger } from './logger.ts';
+import type { Config } from "../infrastructure/config.ts";
+import { getLogger } from '../infrastructure/logger.ts';
 
 export class GarageService {
   #logger = getLogger();

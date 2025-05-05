@@ -1,11 +1,10 @@
 import { defineConfig } from '@mikro-orm/mysql';
-import { getConfig } from './config.service.ts';
+import { getDatabaseConfig } from './config.ts';
 
 export default defineConfig({
-  clientUrl: getConfig().database.url,
+  clientUrl: getDatabaseConfig().url,
 
-  entities: ['src/**/*.entity.js'],
-  entitiesTs: ['src/**/*.entity.ts'],
+  entities: ['src/modules/**/*.entity.ts'],
 
   migrations: {
     tableName: 'migrations', // name of database table with log of executed transactions
@@ -14,5 +13,5 @@ export default defineConfig({
     transactional: false
   },
 
-  debug: false,
+  debug: false
 });

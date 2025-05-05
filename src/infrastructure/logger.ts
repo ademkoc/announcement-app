@@ -1,6 +1,6 @@
 import pino from 'pino';
 import pretty from 'pino-pretty';
-import { getConfig, type Config } from "./config.service.ts";
+import { getConfig, type Config } from "./config.ts";
 
 let cache: pino.Logger<never, boolean>;
 

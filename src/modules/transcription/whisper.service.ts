@@ -11,8 +11,8 @@ export class WhisperService extends AbstractTranscriptionService implements ITra
 
     try {
       const result = await execa({
-          cancelSignal: controller.signal,
-          gracefulCancel: true,
+        cancelSignal: controller.signal,
+        gracefulCancel: true,
       })`whisper-cli -m /Users/adem/Documents/workspace/whisper.cpp/models/ggml-large-v3-turbo.bin -f ${tmpFilePath} -l tr`;
 
       if (result.failed) {

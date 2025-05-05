@@ -1,9 +1,9 @@
 import path from 'node:path';
 import fs from 'node:fs/promises';
-import type { Config } from './config.service.ts';
-import { GarageService } from './garage.service.ts';
-import { MessageService } from './message.service.ts';
-import { getLogger } from './logger.ts';
+import type { Config } from '../../infrastructure/config.ts';
+import { GarageService } from '../garage.service.ts';
+import { MessageService } from '../../infrastructure/message.service.ts';
+import { getLogger } from '../../infrastructure/logger.ts';
 
 export class RecordWatchService {
   #logger = getLogger();

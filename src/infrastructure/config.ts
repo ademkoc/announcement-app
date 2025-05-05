@@ -1,5 +1,5 @@
 import type { Level } from 'pino';
-import packageJson from '../package.json' with { type: 'json' };
+import packageJson from '../../package.json' with { type: 'json' };
 
 export type Environment = 'test' | 'production' | 'development';
 
@@ -15,16 +15,18 @@ export function getMandatoryEnv(key: string): string {
   return value;
 }
 
+export function getDatabaseConfig() {
+  return {
+    url: getMandatoryEnv('DATABASE_URL'),
+  };
+}
+
 export function getConfig(): Config {
   return {
     nodeEnv: getMandatoryEnv('NODE_ENV') as Environment,
     serviceName: getEnv('SERVICE_NAME') || packageJson.name,
     environment: getMandatoryEnv('APP_ENV') as Environment,
     logLevel: getEnv('LOG_LEVEL') as Level || 'info',
-
-    database: {
-      url: getMandatoryEnv('DATABASE_URL')
-    },
 
     storage: {
       region: getMandatoryEnv('AWS_DEFAULT_REGION'),
@@ -47,15 +49,12 @@ export function getConfig(): Config {
     recordingsFolderPath: getMandatoryEnv('RECORDINGS_FOLDER_PATH'),
   };
 }
+
 export type Config = {
   nodeEnv: Environment;
   serviceName: string;
   environment: Environment;
   logLevel: Level;
-
-  database: {
-    url: string;
-  }
 
   storage: {
     region: string;

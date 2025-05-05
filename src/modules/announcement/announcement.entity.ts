@@ -1,7 +1,7 @@
 import { EntitySchema, OptionalProps } from '@mikro-orm/core';
-import { SdrRecordRepository } from './sdr-record.repository.ts';
+import { AnnouncementRepository } from './announcement.repository.ts';
 
-export interface ISdrRecord {
+export interface IAnnouncement {
   id: number;
   name: string;
   district: string;
@@ -12,9 +12,9 @@ export interface ISdrRecord {
   [OptionalProps]?: 'createdAt' | 'updatedAt';
 }
 
-export const SdrRecord = new EntitySchema<ISdrRecord>({
-  name: 'SdrRecord',
-  repository: () => SdrRecordRepository,
+export const Announcement = new EntitySchema<IAnnouncement>({
+  name: 'Announcement',
+  repository: () => AnnouncementRepository,
   properties: {
     id: { type: 'number', primary: true },
     name: { type: 'varchar', length: 255, nullable: false },
