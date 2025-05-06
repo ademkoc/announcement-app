@@ -9,7 +9,7 @@ const streamPipeline = promisify(pipeline);
 
 export abstract class AbstractTranscriptionService {
   async saveToTempFolder(filename: string, file: ReadableStream) {
-    const destinationPath = new URL(`../../temp/${filename}`, import.meta.url);
+    const destinationPath = new URL(`../../../temp/${filename}`, import.meta.url);
     await streamPipeline(file, fs.createWriteStream(destinationPath));
     return fileURLToPath(destinationPath);
   }

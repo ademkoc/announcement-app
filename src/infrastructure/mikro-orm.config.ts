@@ -1,5 +1,6 @@
-import { defineConfig } from '@mikro-orm/mysql';
+import { defineConfig, EntityManager, RequestContext } from '@mikro-orm/mysql';
 import { getDatabaseConfig } from './config.ts';
+import type { HookHandlerDoneFunction } from 'fastify';
 
 export default defineConfig({
   clientUrl: getDatabaseConfig().url,
@@ -15,3 +16,6 @@ export default defineConfig({
 
   debug: false
 });
+
+export const ormEntityManagerHook =
+  (em: EntityManager, done: HookHandlerDoneFunction) => RequestContext.create(em, done);

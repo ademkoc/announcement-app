@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "node --no-warnings=ExperimentalWarning --experimental-strip-types --env-file=.env src/index.ts",
-    "dev": "node --watch --no-warnings=ExperimentalWarning --experimental-strip-types --env-file=.env src/index.ts",
+    "start": "node --no-warnings=ExperimentalWarning --experimental-strip-types --env-file=.env src/server.ts",
+    "dev": "node --watch --no-warnings=ExperimentalWarning --experimental-strip-types --env-file=.env src/server.ts",
     "migration:create": "NODE_OPTIONS='-r dotenv/config --no-warnings=ExperimentalWarning --experimental-strip-types' mikro-orm migration:create",
     "migration:down": "NODE_OPTIONS='-r dotenv/config --no-warnings=ExperimentalWarning --experimental-strip-types' mikro-orm migration:down",
     "migration:up": "NODE_OPTIONS='-r dotenv/config --no-warnings=ExperimentalWarning --experimental-strip-types' mikro-orm migration:up"
@@ -28,6 +28,7 @@
     "@mikro-orm/mysql": "^6.4.13",
     "dotenv": "^16.5.0",
     "execa": "^9.5.2",
+    "fastify": "^5.3.2",
     "luxon": "^3.6.1",
     "microsoft-cognitiveservices-speech-sdk": "^1.43.1",
     "pino": "^9.6.0"

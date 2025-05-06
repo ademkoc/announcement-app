@@ -7,6 +7,21 @@ export function getEnv<T extends string>(key: string): T | undefined {
   return process.env[key] as T;
 }
 
+export function getIntegerEnv(key: string): number | undefined {
+  const value = getEnv(key);
+  if (!value) {
+    return undefined;
+  }
+
+  const parsedValue = parseInt(value, 10);
+
+  if (isNaN(parsedValue)) {
+    throw new Error(`Unable to use env var with key: '${key}'`);
+  }
+
+  return parsedValue;
+}
+
 export function getMandatoryEnv(key: string): string {
   const value = getEnv(key);
   if (typeof value === 'undefined') {
@@ -27,6 +42,11 @@ export function getConfig(): Config {
     serviceName: getEnv('SERVICE_NAME') || packageJson.name,
     environment: getMandatoryEnv('APP_ENV') as Environment,
     logLevel: getEnv('LOG_LEVEL') as Level || 'info',
+
+    server: {
+      port: getIntegerEnv('APP_PORT') ?? 3000,
+      bindAddress: getEnv('APP_BIND_ADDRESS') || '0.0.0.0'
+    },
 
     storage: {
       region: getMandatoryEnv('AWS_DEFAULT_REGION'),
@@ -55,6 +75,11 @@ export type Config = {
   serviceName: string;
   environment: Environment;
   logLevel: Level;
+
+  server: {
+    port: number;
+    bindAddress: string;
+  }
 
   storage: {
     region: string;

@@ -14,6 +14,10 @@ export class AnnouncementService {
     this.#transcribeStrategy = transcribeStrategy;
   }
 
+  getAll(pagination: { offset: number; limit: number }) {
+    return this.#announcementRepository.findAndCount({}, { limit: pagination.limit, offset: pagination.offset });
+  }
+
   async getAllFilenames() {
     const announcements = await this.#announcementRepository
       .createQueryBuilder()
