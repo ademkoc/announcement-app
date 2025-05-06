@@ -1,5 +1,5 @@
 import { GarageService } from "../garage.service.ts";
-import type { IConsumer, Message } from "../../infrastructure/message.service.ts";
+import type { IConsumer, Message, MessageService } from "../../infrastructure/message.service.ts";
 import { AnnouncementService } from "./announcement.service.ts";
 import { getLogger } from "../../infrastructure/logger.ts";
 import { DateTime } from 'luxon';
@@ -12,17 +12,20 @@ export type AnnouncementReceivedConsumerMessage = {
 }
 
 export class AnnouncementReceivedConsumer extends EventEmitter implements IConsumer {
-  #logger = getLogger();
+  #logger = getLogger().child({ name: this.constructor.name });
   #garageService: GarageService;
   #announcementService: AnnouncementService;
+  #messageService: MessageService;
 
   constructor(
     garageService: GarageService,
     announcementService: AnnouncementService,
+    messageService: MessageService,
   ) {
     super();
     this.#garageService = garageService;
     this.#announcementService = announcementService;
+    this.#messageService = messageService;
   }
 
   async handleMessage(payload: Message): Promise<void> {
@@ -42,6 +45,13 @@ export class AnnouncementReceivedConsumer extends EventEmitter implements IConsu
         district: message.district,
         receivedAt,
         text
+      });
+
+      this.#messageService.sendMessage('announcement_transcribed', {
+        id: 'announcementTranscribed',
+        body: {
+          text
+        }
       });
     }
   }

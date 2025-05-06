@@ -1,6 +1,6 @@
 import type EventEmitter from 'node:events';
 
-type Queue = 'announcement_received';
+type Queue = 'announcement_received' | 'announcement_transcribed';
 
 export type Message = { id: string; body: Record<string, unknown> };
 
@@ -19,13 +19,7 @@ export class MessageService {
 
   addConsumer(name: string, consumer: ConsumerType) {
     this.#consumers.set(name, consumer);
-    this.#defineConsumers();
-  }
-
-  #defineConsumers() {
-    for (const [, consumer] of this.#consumers) {
-      consumer.on('message', consumer.handleMessage);
-    }
+    consumer.on('message', consumer.handleMessage);
   }
 
   sendMessage(queue: Queue, payload: Message) {

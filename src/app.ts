@@ -11,6 +11,7 @@ import { RecordWatchService } from './modules/announcement/record-watch.service.
 import { AzureCognitiveService } from './modules/transcription/azure-cognitive.service.ts';
 import { ormEntityManagerHook } from './infrastructure/mikro-orm.config.ts';
 import { announcementRoutePlugin } from './modules/announcement/announcement.route.ts';
+import { AnnouncementTranscribedConsumer } from './modules/announcement/announcement-transcribed.consumer.ts';
 
 export async function createApp() {
   const config = getConfig();
@@ -27,8 +28,9 @@ export async function createApp() {
 
   messageService.addConsumer(
     'announcement_received',
-    new AnnouncementReceivedConsumer(garageService, announcementService)
+    new AnnouncementReceivedConsumer(garageService, announcementService, messageService)
   );
+  messageService.addConsumer('announcement_transcribed', new AnnouncementTranscribedConsumer());
 
   const fastify = Fastify({ loggerInstance: getLogger() });
   fastify.addHook('onRequest', function onRequestORMHook(request, reply, done) { ormEntityManagerHook(orm.em, done); });
