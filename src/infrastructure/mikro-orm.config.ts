@@ -5,7 +5,8 @@ import type { HookHandlerDoneFunction } from 'fastify';
 export default defineConfig({
   clientUrl: getDatabaseConfig().url,
 
-  entities: ['src/modules/**/*.entity.ts'],
+  entities: ['src/modules/**/*.entity.js'],
+  entitiesTs: ['src/modules/**/*.entity.ts'],
 
   migrations: {
     tableName: 'migrations', // name of database table with log of executed transactions
@@ -14,7 +15,8 @@ export default defineConfig({
     transactional: false
   },
 
-  debug: false
+  debug: false,
+  preferTs: process.env.NODE_ENV !== 'production',
 });
 
 export const ormEntityManagerHook =
