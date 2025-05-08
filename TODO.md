@@ -5,3 +5,4 @@
 - [X] folder watch
 - [] store last boot check date
 - [] healthcheck on startup
+- [] logger child by file
