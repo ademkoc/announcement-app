@@ -20,6 +20,8 @@ export class MessageService {
   addConsumer(name: string, consumer: ConsumerType) {
     this.#consumers.set(name, consumer);
     consumer.on('message', consumer.handleMessage);
+    // process only one message at a time
+    consumer.setMaxListeners(1);
   }
 
   sendMessage(queue: Queue, payload: Message) {
