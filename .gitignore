@@ -10,3 +10,4 @@ temp/
 *.db-shm
 *.db-wal
 .env
+dist/

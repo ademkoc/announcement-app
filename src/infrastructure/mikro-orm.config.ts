@@ -16,7 +16,7 @@ export default defineConfig({
   },
 
   debug: false,
-  preferTs: process.env.NODE_ENV !== 'production',
+  preferTs: process.env.APP_ENV !== 'production',
 });
 
 export const ormEntityManagerHook =
