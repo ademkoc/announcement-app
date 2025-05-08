@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { promisify } from 'node:util';
 import { pipeline } from 'node:stream';
@@ -9,7 +10,7 @@ const streamPipeline = promisify(pipeline);
 
 export abstract class AbstractTranscriptionService {
   async saveToTempFolder(filename: string, file: ReadableStream) {
-    const destinationPath = new URL(`../../../temp/${filename}`, import.meta.url);
+    const destinationPath = new URL(path.join(os.tmpdir(), filename), import.meta.url);
     await streamPipeline(file, fs.createWriteStream(destinationPath));
     return fileURLToPath(destinationPath);
   }
