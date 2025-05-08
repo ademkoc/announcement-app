@@ -60,6 +60,8 @@ export function getConfig(): Config {
       region: getMandatoryEnv('AZURE_SPEECH_REGION'),
     },
 
+    whisperModelPath: getMandatoryEnv('WHISPER_MODEL_PATH'),
+
     recordingsFolderPath: getMandatoryEnv('RECORDINGS_FOLDER_PATH'),
   };
 }
@@ -86,6 +88,8 @@ export type Config = {
     key: string;
     region: string;
   };
+
+  whisperModelPath: string;
 
   recordingsFolderPath: string;
 }

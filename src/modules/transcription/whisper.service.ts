@@ -1,8 +1,16 @@
 import { execa } from 'execa';
 import type { ITranscriber } from './transcriber.ts';
 import { AbstractTranscriptionService } from './abstract.service.ts';
+import type { Config } from '../../infrastructure/config.ts';
 
 export class WhisperService extends AbstractTranscriptionService implements ITranscriber {
+  #config: Config;
+
+  constructor(config: Config) {
+    super();
+    this.#config = config
+  }
+
   async transcribe(filename: string, stream: ReadableStream) {
     const tmpFilePath = await this.saveToTempFolder(filename, stream);
 
@@ -13,7 +21,7 @@ export class WhisperService extends AbstractTranscriptionService implements ITra
       const result = await execa({
         cancelSignal: controller.signal,
         gracefulCancel: true,
-      })`whisper-cli -m /Users/adem/Documents/workspace/whisper.cpp/models/ggml-large-v3-turbo.bin -f ${tmpFilePath} -l tr`;
+      })`whisper-cli -m ${this.#config.whisperModelPath} -f ${tmpFilePath} -l tr`;
 
       if (result.failed) {
         throw new Error('whisper.cpp is failed!');

@@ -8,10 +8,10 @@ import { Announcement } from './modules/announcement/announcement.entity.ts';
 import { AnnouncementReceivedConsumer } from './modules/announcement/announcement-received.consumer.ts';
 import { logger } from './infrastructure/logger.ts';
 import { RecordWatchService } from './modules/announcement/record-watch.service.ts';
-import { AzureCognitiveService } from './modules/transcription/azure-cognitive.service.ts';
 import { ormEntityManagerHook } from './infrastructure/mikro-orm.config.ts';
 import { announcementRoutePlugin } from './modules/announcement/announcement.route.ts';
 import { AnnouncementTranscribedConsumer } from './modules/announcement/announcement-transcribed.consumer.ts';
+import { WhisperService } from './modules/transcription/whisper.service.ts';
 
 export async function createApp() {
   const config = getConfig();
@@ -21,9 +21,9 @@ export async function createApp() {
   const garageService = new GarageService(config);
   const messageService = new MessageService();
 
-  const azureCognitiveService = new AzureCognitiveService(config);
+  const transcriptionService = new WhisperService(config);
 
-  const announcementService = new AnnouncementService(orm.em.fork().getRepository(Announcement), azureCognitiveService);
+  const announcementService = new AnnouncementService(orm.em.fork().getRepository(Announcement), transcriptionService);
   const recordWatchService = new RecordWatchService(config, garageService, messageService);
 
   messageService.addConsumer(
