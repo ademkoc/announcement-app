@@ -1,8 +1,6 @@
 # ToDo
 
-- [X] ilan tarihi
-- [X] temp sıfırlama
-- [X] folder watch
-- [] store last boot check date
-- [] healthcheck on startup
-- [] logger child by file
+- [] healthcheck
+- [] notification with sound?
+- [] Amazon Transcribe?
+- [] IBM Watson Speech to Text?
