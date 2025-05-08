@@ -40,9 +40,9 @@ export class AzureCognitiveService extends AbstractTranscriptionService implemen
       // Indicates that recognizable speech was not detected, and that recognition is done.
       if (e.result.reason === sdk.ResultReason.NoMatch) {
         var noMatchDetail = sdk.NoMatchDetails.fromResult(e.result);
-        this.#logger.info("\r\n(recognized)  Reason: " + sdk.ResultReason[e.result.reason] + " NoMatchReason: " + sdk.NoMatchReason[noMatchDetail.reason]);
+        this.#logger.info("Reason: " + sdk.ResultReason[e.result.reason] + " NoMatchReason: " + sdk.NoMatchReason[noMatchDetail.reason]);
       } else {
-        this.#logger.info("\r\n(recognized)  Reason: " + sdk.ResultReason[e.result.reason] + " Text: " + e.result.text);
+        this.#logger.info("Reason: " + sdk.ResultReason[e.result.reason] + " Text: " + e.result.text);
 
         text += e.result.text;
       }
