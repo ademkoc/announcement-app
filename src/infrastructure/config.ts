@@ -55,12 +55,6 @@ export function getConfig(): Config {
       recordingsBucket: getMandatoryEnv('AWS_RECORDINGS_BUCKET'),
     },
 
-    amqp: {
-      hostname: getMandatoryEnv('AMQP_HOSTNAME'),
-      username: getMandatoryEnv('AMQP_USERNAME'),
-      password: getMandatoryEnv('AMQP_PASSWORD'),
-    },
-
     azureSpeech: {
       key: getMandatoryEnv('AZURE_SPEECH_SUBSCRIPTION_KEY'),
       region: getMandatoryEnv('AZURE_SPEECH_REGION'),
@@ -86,12 +80,6 @@ export type Config = {
     accessKeyId: string;
     secretAccessKey: string;
     recordingsBucket: string;
-  };
-
-  amqp: {
-    hostname: string;
-    username: string;
-    password: string;
   };
 
   azureSpeech: {
