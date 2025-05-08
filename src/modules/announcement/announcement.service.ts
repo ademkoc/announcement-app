@@ -28,8 +28,9 @@ export class AnnouncementService {
   }
 
   async save(data: Pick<IAnnouncement, 'name' | 'district' | 'text' | 'receivedAt'>) {
-    this.#announcementRepository.create(data);
+    const announcement = this.#announcementRepository.create(data);
     await this.#announcementRepository.getEntityManager().flush();
+    return announcement;
   }
 
   transcribe(filename: string, stream: ReadableStream) {

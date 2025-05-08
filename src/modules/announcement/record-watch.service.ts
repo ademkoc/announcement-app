@@ -3,10 +3,9 @@ import fs from 'node:fs/promises';
 import type { Config } from '../../infrastructure/config.ts';
 import { GarageService } from '../garage.service.ts';
 import { MessageService } from '../../infrastructure/message.service.ts';
-import { getLogger } from '../../infrastructure/logger.ts';
+import { logger, setLoggerContext } from '../../infrastructure/logger.ts';
 
 export class RecordWatchService {
-  #logger = getLogger();
   #config: Config;
   #messageService: MessageService;
   #garageService: GarageService;
@@ -41,8 +40,7 @@ export class RecordWatchService {
     );
 
     await Promise.all(
-      Array.from(difference).map(filename => this.preProcess(filename))
-    );
+      Array.from(difference).map(filename => setLoggerContext(filename, () => this.preProcess(filename))));
   }
 
   async preProcess(filename: string) {
@@ -59,28 +57,25 @@ export class RecordWatchService {
       id: 'announcementReceived',
       body: {
         filename,
-        district,
+        district: district.charAt(0).toUpperCase() + district.slice(1),
         receivedAt: `${formatedDate} ${formatedTime}`,
       }
     });
 
-    this.#logger.info(`Message sent for ${filename}!`);
+    logger.info('Message sent!');
   }
 
   async watchFolder() {
     for await (const event of fs.watch(this.#config.recordingsFolderPath, {})) {
-      this.#logger.debug(event);
+      logger.debug(event);
 
-      if (!event.filename) {
+      const filename = event.filename;
+      if (!filename || filename === '.DS_Store') {
         continue;
       }
 
-      if (event.filename === '.DS_Store') {
-        continue;
-      }
-
-      if (path.extname(event.filename) === '.mp3') {
-        await this.preProcess(event.filename);
+      if (path.extname(filename) === '.mp3') {
+        setLoggerContext(filename, () => this.preProcess(filename));
       }
     }
   }

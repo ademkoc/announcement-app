@@ -6,7 +6,7 @@ import { AnnouncementService } from './modules/announcement/announcement.service
 import { GarageService } from './modules/garage.service.ts';
 import { Announcement } from './modules/announcement/announcement.entity.ts';
 import { AnnouncementReceivedConsumer } from './modules/announcement/announcement-received.consumer.ts';
-import { getLogger } from './infrastructure/logger.ts';
+import { logger } from './infrastructure/logger.ts';
 import { RecordWatchService } from './modules/announcement/record-watch.service.ts';
 import { AzureCognitiveService } from './modules/transcription/azure-cognitive.service.ts';
 import { ormEntityManagerHook } from './infrastructure/mikro-orm.config.ts';
@@ -32,7 +32,7 @@ export async function createApp() {
   );
   messageService.addConsumer('announcement_transcribed', new AnnouncementTranscribedConsumer());
 
-  const fastify = Fastify({ loggerInstance: getLogger() });
+  const fastify = Fastify({ loggerInstance: logger });
   fastify.addHook('onRequest', function onRequestORMHook(request, reply, done) { ormEntityManagerHook(orm.em, done); });
   fastify.addHook('onClose', async () => await orm.close());
   fastify.register(announcementRoutePlugin, { announcementService, prefix: 'v1/announcement' });

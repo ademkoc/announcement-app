@@ -1,10 +1,9 @@
 import packageJson from '../package.json' with { type: 'json' };
 import { createApp } from './app.ts';
 import { getConfig } from './infrastructure/config.ts';
-import { getLogger } from './infrastructure/logger.ts';
+import { logger } from './infrastructure/logger.ts';
 
 async function startServer() {
-  const logger = getLogger();
   const config = getConfig();
 
   logger.info('Starting application...');

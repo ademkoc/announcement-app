@@ -3,11 +3,10 @@ import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 import type { ITranscriber } from "./transcriber.ts";
 import { AbstractTranscriptionService } from "./abstract.service.ts";
 import type { Config } from '../../infrastructure/config.ts';
-import { getLogger } from "../../infrastructure/logger.ts";
+import { logger } from "../../infrastructure/logger.ts";
 
 export class AzureCognitiveService extends AbstractTranscriptionService implements ITranscriber {
   #speechConfig: sdk.SpeechConfig;
-  #logger = getLogger();
 
   constructor(config: Config) {
     super();
@@ -40,9 +39,9 @@ export class AzureCognitiveService extends AbstractTranscriptionService implemen
       // Indicates that recognizable speech was not detected, and that recognition is done.
       if (e.result.reason === sdk.ResultReason.NoMatch) {
         var noMatchDetail = sdk.NoMatchDetails.fromResult(e.result);
-        this.#logger.info("Reason: " + sdk.ResultReason[e.result.reason] + " NoMatchReason: " + sdk.NoMatchReason[noMatchDetail.reason]);
+        logger.info("Reason: " + sdk.ResultReason[e.result.reason] + " NoMatchReason: " + sdk.NoMatchReason[noMatchDetail.reason]);
       } else {
-        this.#logger.info("Reason: " + sdk.ResultReason[e.result.reason] + " Text: " + e.result.text);
+        logger.info("Reason: " + sdk.ResultReason[e.result.reason] + " Text: " + e.result.text);
 
         text += e.result.text;
       }
@@ -64,11 +63,11 @@ export class AzureCognitiveService extends AbstractTranscriptionService implemen
     };
 
     reco.sessionStarted = (s, e) => {
-      this.#logger.debug("(session started)  SessionId: " + e.sessionId);
+      logger.debug("(session started)  SessionId: " + e.sessionId);
     };
 
     reco.sessionStopped = (s, e) => {
-      this.#logger.debug("(session stopped)  SessionId: " + e.sessionId);
+      logger.debug("(session stopped)  SessionId: " + e.sessionId);
 
       reco.stopContinuousRecognitionAsync();
       reco.close();

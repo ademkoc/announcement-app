@@ -2,10 +2,10 @@ import type EventEmitter from 'node:events';
 
 type Queue = 'announcement_received' | 'announcement_transcribed';
 
-export type Message = { id: string; body: Record<string, unknown> };
+export type Message<T> = { id: string; body: T };
 
 export interface IConsumer {
-  handleMessage: (msg: Message) => void
+  handleMessage: (msg: Message<any>) => void
 }
 
 type ConsumerType = EventEmitter & IConsumer;
@@ -24,7 +24,7 @@ export class MessageService {
     consumer.setMaxListeners(1);
   }
 
-  sendMessage(queue: Queue, payload: Message) {
+  sendMessage(queue: Queue, payload: Message<any>) {
     const consumer = this.#consumers.get(queue);
     if (!consumer) {
       throw new Error(`Consumer not found for queue: ${queue}`);

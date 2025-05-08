@@ -1,10 +1,9 @@
 import fs from 'node:fs';
 import * as AWS from "@aws-sdk/client-s3";
 import type { Config } from "../infrastructure/config.ts";
-import { getLogger } from '../infrastructure/logger.ts';
+import { logger } from '../infrastructure/logger.ts';
 
 export class GarageService {
-  #logger = getLogger();
   #config: Config;
   #client: AWS.S3Client;
 
@@ -32,7 +31,7 @@ export class GarageService {
         })
       );
 
-      this.#logger.info(`${filename} if uploaded!`);
+      logger.info(`File is uploaded!`);
 
     } catch (error) {
       throw new Error('File upload failed', { cause: error });

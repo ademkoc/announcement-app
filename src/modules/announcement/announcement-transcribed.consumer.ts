@@ -1,27 +1,21 @@
 import type { IConsumer, Message } from "../../infrastructure/message.service.ts";
-import { getLogger } from "../../infrastructure/logger.ts";
+import { logger } from "../../infrastructure/logger.ts";
 import EventEmitter from "node:events";
-
-export type AnnouncementTranscribedConsumerMessage = {
-  filename: string;
-  district: string;
-  receivedAt: string;
-}
+import type { IAnnouncement } from "./announcement.entity.ts";
 
 export class AnnouncementTranscribedConsumer extends EventEmitter implements IConsumer {
-  #logger = getLogger().child({ name: this.constructor.name });
-
-  constructor(
-  ) {
+  constructor() {
     super();
   }
 
-  async handleMessage(payload: Message): Promise<void> {
-    this.#logger.info('New message received', JSON.stringify(payload));
+  async handleMessage(message: Message<IAnnouncement>): Promise<void> {
+    const childLogger = logger.child({ consumer: this.constructor.name });
+    childLogger.info({ message }, 'New message received');
 
     await fetch('https://ntfy.sh/ademkoc', {
       method: 'POST',
-      body: payload.body.text as string
+      body: message.body.text as string,
+      headers: { 'Title': message.body.district, 'Tags': 'loudspeaker' }
     });
   }
 }

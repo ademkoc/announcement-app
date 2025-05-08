@@ -1,9 +1,9 @@
+import { DateTime } from 'luxon';
+import EventEmitter from "node:events";
 import { GarageService } from "../garage.service.ts";
 import type { IConsumer, Message, MessageService } from "../../infrastructure/message.service.ts";
 import { AnnouncementService } from "./announcement.service.ts";
-import { getLogger } from "../../infrastructure/logger.ts";
-import { DateTime } from 'luxon';
-import EventEmitter from "node:events";
+import { logger } from "../../infrastructure/logger.ts";
 
 export type AnnouncementReceivedConsumerMessage = {
   filename: string;
@@ -12,7 +12,6 @@ export type AnnouncementReceivedConsumerMessage = {
 }
 
 export class AnnouncementReceivedConsumer extends EventEmitter implements IConsumer {
-  #logger = getLogger().child({ name: this.constructor.name });
   #garageService: GarageService;
   #announcementService: AnnouncementService;
   #messageService: MessageService;
@@ -28,30 +27,29 @@ export class AnnouncementReceivedConsumer extends EventEmitter implements IConsu
     this.#messageService = messageService;
   }
 
-  async handleMessage(payload: Message): Promise<void> {
-    this.#logger.info('New message received', JSON.stringify(payload));
+  async handleMessage(message: Message<AnnouncementReceivedConsumerMessage>): Promise<void> {
+    const childLogger = logger.child({ consumer: this.constructor.name });
+    childLogger.info({ message }, 'Received message!');
 
-    const message = payload.body as AnnouncementReceivedConsumerMessage;
+    const payload = message.body as AnnouncementReceivedConsumerMessage;
 
-    const file = await this.#garageService.getFile(message.filename);
+    const file = await this.#garageService.getFile(payload.filename);
 
     if (file) {
-      const text = await this.#announcementService.transcribe(message.filename, file.transformToWebStream());
+      const text = await this.#announcementService.transcribe(payload.filename, file.transformToWebStream());
 
-      const receivedAt = DateTime.fromFormat(message.receivedAt, 'yyyy-MM-dd HH:mm:ss').toJSDate();
+      const receivedAt = DateTime.fromFormat(payload.receivedAt, 'yyyy-MM-dd HH:mm:ss').toJSDate();
 
-      await this.#announcementService.save({
-        name: message.filename,
-        district: message.district,
+      const announcement = await this.#announcementService.save({
+        name: payload.filename,
+        district: payload.district,
         receivedAt,
         text
       });
 
       this.#messageService.sendMessage('announcement_transcribed', {
         id: 'announcementTranscribed',
-        body: {
-          text
-        }
+        body: announcement
       });
     }
   }

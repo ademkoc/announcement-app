@@ -1,18 +1,14 @@
-import pino from 'pino';
+import pino, { type Logger } from 'pino';
 import pretty from 'pino-pretty';
-import { getConfig, type Config } from "./config.ts";
+import { AsyncLocalStorage } from 'node:async_hooks';
+import { getConfig } from "./config.ts";
 
-let cache: pino.Logger<never, boolean>;
+const config = getConfig();
+const context = new AsyncLocalStorage<{ logger: Logger }>();
 
-export function getLogger() {
-  if (cache) {
-    return cache;
-  }
-
-  const config = getConfig();
-
+function getLogger() {
   if (config.environment !== 'production') {
-    cache = pino.default(
+    return pino.default(
       pretty({
         sync: true,
         minimumLevel: config.logLevel,
@@ -21,13 +17,20 @@ export function getLogger() {
         ignore: 'hostname,pid'
       })
     );
-
-    return cache;
   }
 
-  cache = pino.default({
+  return pino.default({
     level: config.logLevel,
   });
+}
 
-  return cache;
+export const logger = new Proxy(getLogger(), {
+  get(target, property, receiver) {
+    const store = context.getStore();
+    return Reflect.get(store?.logger ?? target, property, receiver);
+  },
+});
+
+export function setLoggerContext(filename: string, callback: () => void) {
+  return context.run({ logger: getLogger().child({ filename }) }, callback);
 }
