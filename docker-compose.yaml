@@ -8,7 +8,7 @@ services:
       - 3901:3901
       - 3902:3902
     volumes:
-      - ./garage.toml:/etc/garage.toml
+      - ./.deploy/garage.toml:/etc/garage.toml
       - garage-meta:/var/lib/garage/meta
       - garage-data:/var/lib/garage/data
 
