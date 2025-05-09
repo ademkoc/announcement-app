@@ -4,7 +4,7 @@ import type { HookHandlerDoneFunction } from 'fastify';
 export default defineConfig({
   dbName: 'sqlite.db',
 
-  entities: ['src/modules/**/*.entity.js'],
+  entities: ['dist/src/modules/**/*.entity.js'],
   entitiesTs: ['src/modules/**/*.entity.ts'],
 
   migrations: {

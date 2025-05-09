@@ -32,7 +32,6 @@ export function getMandatoryEnv(key: string): string {
 
 export function getDatabaseConfig() {
   return {
-    url: getMandatoryEnv('DATABASE_URL'),
   };
 }
 
