@@ -2,7 +2,7 @@
 
 This tool automatically **converts audio files recorded with [RTLSDR-Airband](https://github.com/rtl-airband/RTLSDR-Airband) into text** and **sends the transcriptions to a specific channel via [ntfy.sh](https://ntfy.sh/)**.
 
-### How It Works
+## How It Works
 
 - Audio is recorded using RTLSDR-Airband.
 - Each file is processed through the selected Speech-to-Text engine.
@@ -14,6 +14,34 @@ This tool automatically **converts audio files recorded with [RTLSDR-Airband](ht
 - **Azure Cognitive Services**
 
 ## Requirements & Setup
+
+### [File Storage](https://garagehq.deuxfleurs.fr/)
+
+- Garage provides AWS S3 compatible API
+
+#### Installation
+
+```bash
+alias garage="docker exec -ti <container-id> /garage"
+
+garage status # get node id
+
+garage layout assign -z dc1 -c 1G <node-id>
+
+garage layout apply --version 1
+
+garage bucket create sdr-record-bucket
+
+# now you have credentials
+garage key create sdr-record-app-key
+
+garage bucket allow \
+  --read \
+  --write \
+  --owner \
+  sdr-record-bucket \
+  --key sdr-record-app-key
+```
 
 ### Whisper.cpp
 
