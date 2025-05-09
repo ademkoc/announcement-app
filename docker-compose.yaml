@@ -1,17 +1,4 @@
 services:
-  mysql:
-    image: mysql:latest
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: announcement_db
-      MYSQL_USER: user
-      MYSQL_PASSWORD: pass
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-
   garage:
     container_name: garaged
     image: dxflrs/garage:v1.1.0
@@ -26,6 +13,5 @@ services:
       - garage-data:/var/lib/garage/data
 
 volumes:
-  mysql_data:
   garage-meta:
   garage-data:

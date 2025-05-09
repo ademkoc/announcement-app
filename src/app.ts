@@ -1,5 +1,5 @@
 import Fastify from 'fastify';
-import { MikroORM } from '@mikro-orm/mysql';
+import { MikroORM } from '@mikro-orm/better-sqlite';
 import { MessageService } from './infrastructure/message.service.ts';
 import { getConfig } from './infrastructure/config.ts';
 import { AnnouncementService } from './modules/announcement/announcement.service.ts';

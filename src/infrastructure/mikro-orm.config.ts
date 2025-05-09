@@ -1,9 +1,8 @@
-import { defineConfig, EntityManager, RequestContext } from '@mikro-orm/mysql';
-import { getDatabaseConfig } from './config.ts';
+import { defineConfig, EntityManager, RequestContext } from '@mikro-orm/better-sqlite';
 import type { HookHandlerDoneFunction } from 'fastify';
 
 export default defineConfig({
-  clientUrl: getDatabaseConfig().url,
+  dbName: 'sqlite.db',
 
   entities: ['src/modules/**/*.entity.js'],
   entitiesTs: ['src/modules/**/*.entity.ts'],
