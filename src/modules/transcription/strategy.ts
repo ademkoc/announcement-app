@@ -9,7 +9,10 @@ import { logger } from '../../infrastructure/logger.ts';
 
 const streamPipeline = promisify(pipeline);
 
-export abstract class AbstractTranscriptionService {
+export abstract class TranscriberStrategy {
+
+  abstract transcribe(filename: string, stream: ReadableStream): Promise<string>;
+
   async saveToTempFolder(filename: string, file: ReadableStream) {
     const destinationPath = new URL(path.join(os.tmpdir(), filename), import.meta.url);
     await streamPipeline(file, fs.createWriteStream(destinationPath));

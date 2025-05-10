@@ -1,9 +1,8 @@
 import { execa } from 'execa';
-import type { ITranscriber } from './transcriber.ts';
-import { AbstractTranscriptionService } from './abstract.service.ts';
+import { TranscriberStrategy } from './strategy.ts';
 import type { Config } from '../../infrastructure/config.ts';
 
-export class WhisperService extends AbstractTranscriptionService implements ITranscriber {
+export class WhisperService extends TranscriberStrategy {
   #config: Config;
 
   constructor(config: Config) {

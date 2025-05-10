@@ -1,14 +1,14 @@
 import { AnnouncementRepository } from './announcement.repository.ts';
 import type { IAnnouncement } from './announcement.entity.ts';
-import type { ITranscriber } from '../transcription/transcriber.ts';
+import type { TranscriberStrategy } from '../transcription/strategy.ts';
 
 export class AnnouncementService {
   #announcementRepository: AnnouncementRepository;
-  #transcribeStrategy: ITranscriber;
+  #transcribeStrategy: TranscriberStrategy;
 
   constructor(
     announcementRepository: AnnouncementRepository,
-    transcribeStrategy: ITranscriber,
+    transcribeStrategy: TranscriberStrategy,
   ) {
     this.#announcementRepository = announcementRepository;
     this.#transcribeStrategy = transcribeStrategy;
