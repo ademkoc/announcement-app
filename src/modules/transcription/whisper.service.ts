@@ -1,6 +1,7 @@
 import { execa } from 'execa';
 import { TranscriberStrategy } from './strategy.ts';
 import type { Config } from '../../infrastructure/config.ts';
+import { abortController } from '../../server.ts';
 
 export class WhisperService extends TranscriberStrategy {
   #config: Config;
@@ -13,12 +14,9 @@ export class WhisperService extends TranscriberStrategy {
   async transcribe(filename: string, stream: ReadableStream) {
     const tmpFilePath = await this.saveToTempFolder(filename, stream);
 
-    const controller = new AbortController();
-    setTimeout(() => controller.abort(), 60 * 1000);
-
     try {
       const result = await execa({
-        cancelSignal: controller.signal,
+        cancelSignal: abortController.signal,
         gracefulCancel: true,
       })`whisper-cli -m ${this.#config.whisperModelPath} -f ${tmpFilePath} -l tr`;
 

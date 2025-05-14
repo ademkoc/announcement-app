@@ -3,12 +3,13 @@ import { createApp } from './app.ts';
 import { getConfig } from './infrastructure/config.ts';
 import { logger } from './infrastructure/logger.ts';
 
+export const abortController = new AbortController();
+
 async function startServer() {
   const config = getConfig();
 
   logger.info('Starting application...');
 
-  const abortController = new AbortController();
   const app = await createApp();
 
   try {

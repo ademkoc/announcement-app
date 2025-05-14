@@ -6,6 +6,7 @@ import { pipeline } from 'node:stream';
 import { fileURLToPath } from 'node:url';
 import { execa } from 'execa';
 import { logger } from '../../infrastructure/logger.ts';
+import { abortController } from '../../server.ts';
 
 const streamPipeline = promisify(pipeline);
 
@@ -24,7 +25,10 @@ export abstract class TranscriberStrategy {
 
     const outputPath = tmpFilePath.replace('.mp3', '.wav');
 
-    const result = await execa({})`gst-launch-1.0 filesrc location=${tmpFilePath} ! decodebin ! audioconvert ! audioresample ! wavenc ! filesink location=${outputPath}`;
+    const result = await execa({
+      cancelSignal: abortController.signal,
+      gracefulCancel: true,
+    })`gst-launch-1.0 filesrc location=${tmpFilePath} ! decodebin ! audioconvert ! audioresample ! wavenc ! filesink location=${outputPath}`;
 
     if (result.failed) {
       throw new Error('MP3 to WAV conversion is failed!')
