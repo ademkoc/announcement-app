@@ -22,6 +22,8 @@ This tool automatically **converts audio files recorded with [RTLSDR-Airband](ht
 #### Installation
 
 ```bash
+docker-compose up -d
+
 alias garage="docker exec -ti <container-id> /garage"
 
 garage status # get node id
@@ -32,7 +34,7 @@ garage layout apply --version 1
 
 garage bucket create sdr-record-bucket
 
-# now you have credentials
+# now you have credentials, use them in .env file
 garage key create sdr-record-app-key
 
 garage bucket allow \
@@ -41,6 +43,8 @@ garage bucket allow \
   --owner \
   sdr-record-bucket \
   --key sdr-record-app-key
+
+make start
 ```
 
 ### Whisper.cpp
