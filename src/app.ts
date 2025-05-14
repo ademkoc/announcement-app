@@ -8,7 +8,7 @@ import { Announcement } from './modules/announcement/announcement.entity.ts';
 import { AnnouncementReceivedConsumer } from './modules/announcement/announcement-received.consumer.ts';
 import { logger } from './infrastructure/logger.ts';
 import { RecordWatchService } from './modules/announcement/record-watch.service.ts';
-import { ormEntityManagerHook } from '../mikro-orm.config.ts';
+import { ormEntityManagerHook } from './mikro-orm.config.ts';
 import { announcementRoutePlugin } from './modules/announcement/announcement.route.ts';
 import { AnnouncementTranscribedConsumer } from './modules/announcement/announcement-transcribed.consumer.ts';
 import { AzureCognitiveService } from './modules/transcription/azure-cognitive.service.ts';
